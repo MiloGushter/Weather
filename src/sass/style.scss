@@ -1,8 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
 
-$font: "Heebo", sans-serif;
+$font: "Roboto", sans-serif;
 $black: #232323;
 $grey: #979797;
+$grey-faded: rgba(239, 239, 239, 0.5);
 
 html {
 	box-sizing: border-box;
@@ -51,6 +52,10 @@ main {
 	height: 100vh;
 }
 
+.wrapper {
+	display: flex;
+}
+
 .aside {
 	width: 30%;
 	display: flex;
@@ -60,7 +65,12 @@ main {
 }
 
 .main {
-	width: 70%;
+	// Flex and overflow ensure that main is scrollable
+	// and aside is fixed
+	flex: 1;
+	overflow-y: auto;
+	background-color: $grey-faded;
+	padding: 3rem;
 }
 
 .aside-search {
@@ -79,6 +89,10 @@ main {
 	flex-direction: column;
 }
 
+.aside-weather-info-icon {
+	max-width: 120px;
+}
+
 .aside-weather-info-temeprature .temperature-number {
 	font-size: 6rem;
 }
@@ -92,4 +106,89 @@ main {
 	span {
 		color: $grey;
 	}
+}
+
+.main-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 2rem;
+}
+
+@mixin heading-paragraph {
+	font-size: 2rem;
+	font-weight: 800;
+}
+
+.main-header-paragraph {
+	@include heading-paragraph();
+}
+.main-today-info-paragraph {
+	@include heading-paragraph();
+	margin-bottom: 2rem;
+}
+
+.main-forecast-cards,
+.main-today-cards {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-column-gap: 1rem;
+	grid-row-gap: 2rem;
+}
+
+.main-forecast-cards {
+	margin-bottom: 2rem;
+}
+.card {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 2rem 0.5rem;
+	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+	border-radius: 0.75rem;
+	img {
+		max-width: 150px;
+	}
+}
+
+.max-temperature,
+.min-temperature {
+	vertical-align: top;
+	sup {
+		vertical-align: top;
+	}
+}
+.min-temperature {
+	color: $grey;
+}
+.main-today-cards > .card {
+	padding: 1.5rem 1rem;
+	align-items: start;
+}
+
+.today-header {
+	font-size: 1.25rem;
+	color: $grey;
+}
+
+.today-wind-value,
+.today-humidity-value,
+.today-visibility-value {
+	font-size: 4rem;
+	.value-metric {
+		font-size: 1rem;
+	}
+	margin: 2rem 0;
+}
+
+.today-wind-direction,
+.today-humidity-status,
+.today-visibility-status {
+	span {
+		margin-right: 0.5rem;
+	}
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }

@@ -11,28 +11,92 @@
 		<title>Weather app</title>
 	</head>
 	<body>
-		<aside class="aside">
-			<div class="aside-search">
-				<span class="material-symbols-rounded"> search </span>
-				<input
-					type="text"
-					placeholder="Find a city..."
-					class="aside-search-input"
-				/>
-			</div>
-			<div class="aside-weather-info">
-				<div class="aside-weather-info-icon">
-					<img alt="" />
+		<div class="wrapper">
+			<aside class="aside">
+				<div class="aside-search">
+					<span class="material-symbols-rounded"> search </span>
+					<input
+						type="text"
+						placeholder="Find a city..."
+						class="aside-search-input"
+					/>
 				</div>
-				<p class="aside-weather-info-temeprature">
-					<span class="temperature-number"
-						><sup class="temperature-degrees"></sup
-					></span>
-				</p>
-				<p class="aside-weather-info-day"><span></span></p>
-			</div>
-			<p class="aside-city-info"></p>
-		</aside>
-		<main class="main"></main>
+				<div class="aside-weather-info">
+					<img alt="" class="aside-weather-info-icon" />
+					<p class="aside-weather-info-temeprature">
+						<span class="temperature-number"
+							><sup class="temperature-degrees"></sup
+						></span>
+					</p>
+					<p class="aside-weather-info-day"><span></span></p>
+				</div>
+				<p class="aside-city-info"></p>
+			</aside>
+			<main class="main">
+				<div class="main-header">
+					<p class="main-header-paragraph">
+						Forecast for today and next 2 days
+					</p>
+				</div>
+				<div class="main-forecast-cards">
+					<div class="main-forecast card">
+						<p class="forecast-card-day">Sun</p>
+						<img src="#" alt="" class="forecast-card-icon" />
+						<p class="forecast-card-temperature">
+							<span class="max-temperature">12</span>
+							<span class="min-temperature">9</span>
+						</p>
+					</div>
+					<div class="main-forecast card">
+						<p class="forecast-card-day">Sun</p>
+						<img src="#" alt="" class="forecast-card-icon" />
+						<p class="forecast-card-temperature">
+							<span class="max-temperature">12</span>
+							<span class="min-temperature">9</span>
+						</p>
+					</div>
+					<div class="main-forecast card">
+						<p class="forecast-card-day">Sun</p>
+						<img src="#" alt="" class="forecast-card-icon" />
+						<p class="forecast-card-temperature">
+							<span class="max-temperature">12</span>
+							<span class="min-temperature">9</span>
+						</p>
+					</div>
+				</div>
+				<p class="main-today-info-paragraph">Today's info</p>
+				<div class="main-today-cards">
+					<div class="today-wind card">
+						<p class="today-wind-header today-header">Wind status</p>
+						<p class="today-wind-value">
+							20.2 <span class="value-metric">km/h</span>
+						</p>
+						<p class="today-wind-direction">
+							<span class="material-symbols-rounded"> near_me </span> WSW
+						</p>
+					</div>
+					<div class="today-humidity card">
+						<p class="today-humidity-header today-header">Humidity</p>
+						<p class="today-humidity-value">
+							20.2 <span class="value-metric">%</span>
+						</p>
+						<p class="today-humidity-status">
+							<span class="material-symbols-rounded"> water_drop </span>
+							Average
+						</p>
+					</div>
+					<div class="today-visibility card">
+						<p class="today-visibility-header today-header">Visibility</p>
+						<p class="today-visibility-value">
+							5 <span class="value-metric">km</span>
+						</p>
+						<p class="today-visibility-status">
+							<span class="material-symbols-rounded"> visibility </span>
+							Normal
+						</p>
+					</div>
+				</div>
+			</main>
+		</div>
 	</body>
 </html>
