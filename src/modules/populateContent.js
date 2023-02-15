@@ -54,16 +54,16 @@ function changeTextAfterIcon(parent) {
 }
 
 function populateWindCard(card, forecast) {
-	const windValue = card[0].children[1];
+	const windValueHolder = card[0].children[1];
 	const windMetric = document.createElement("span");
 	const windSpeed = forecast.day.maxwind_kph;
 	windMetric.textContent = "km/h";
 	windMetric.classList.add("value-metric");
-	windValue.textContent = `${windSpeed} `;
-	windValue.appendChild(windMetric);
-	const windStrength = windValue.nextElementSibling;
+	windValueHolder.textContent = `${windSpeed} `;
+	windValueHolder.appendChild(windMetric);
+	const windStrength = windValueHolder.nextElementSibling;
 	changeTextAfterIcon(windStrength);
-	if (windValue < 1.6) windStrength.textContent = "Calm";
+	if (windSpeed < 1.6) windStrength.textContent = "Calm";
 	else if (windSpeed < 29)
 		windStrength.appendChild(document.createTextNode("Light wind"));
 	else if (windSpeed < 35)
@@ -77,24 +77,41 @@ function populateWindCard(card, forecast) {
 }
 
 function populateHumidityCard(card, forecast) {
-	const humidityValue = card[1].children[1];
+	const humidityValueHolder = card[1].children[1];
 	const humidityMetric = document.createElement("span");
 	const humidityPercentage = forecast.day.avghumidity;
 	humidityMetric.textContent = "%";
 	humidityMetric.classList.add("value-metric");
-	humidityValue.textContent = `${humidityPercentage} `;
-	humidityValue.appendChild(humidityMetric);
-	const amountOfHumidity = humidityValue.nextElementSibling;
-	changeTextAfterIcon(amountOfHumidity);
+	humidityValueHolder.textContent = `${humidityPercentage} `;
+	humidityValueHolder.appendChild(humidityMetric);
+	const humidityStatus = humidityValueHolder.nextElementSibling;
+	changeTextAfterIcon(humidityStatus);
 	if (humidityPercentage < 25)
-		amountOfHumidity.appendChild(document.createTextNode("Low"));
-	else if (humidityPercentage <= 30)
-		amountOfHumidity.appendChild(document.createTextNode("Slightly low"));
+		humidityStatus.appendChild(document.createTextNode("Low"));
+	else if (humidityPercentage < 30)
+		humidityStatus.appendChild(document.createTextNode("Slightly low"));
 	else if (humidityPercentage < 60)
-		amountOfHumidity.appendChild(document.createTextNode("Good"));
+		humidityStatus.appendChild(document.createTextNode("Good"));
 	else if (humidityPercentage < 70)
-		amountOfHumidity.appendChild(document.createTextNode("Slightly high"));
-	else amountOfHumidity.appendChild(document.createTextNode("High"));
+		humidityStatus.appendChild(document.createTextNode("Slightly high"));
+	else humidityStatus.appendChild(document.createTextNode("High"));
+}
+
+function populateVisibilityCard(card, forecast) {
+	const visibilityValueHolder = card[2].children[1];
+	const visibilityMetric = document.createElement("span");
+	const visibilityDistance = forecast.day.maxwind_kph;
+	visibilityMetric.textContent = "km";
+	visibilityMetric.classList.add("value-metric");
+	visibilityValueHolder.textContent = `${visibilityDistance}`;
+	visibilityValueHolder.appendChild(visibilityMetric);
+	const visibilityStatus = visibilityValueHolder.nextElementSibling;
+	changeTextAfterIcon(visibilityStatus);
+	if (visibilityDistance < 2)
+		visibilityStatus.appendChild(document.createTextNode("Low"));
+	else if (visibilityDistance < 5)
+		visibilityStatus.appendChild(document.createTextNode("Medium"));
+	else visibilityStatus.appendChild(document.createTextNode("Good"));
 }
 
 function populateMainForecastInfo(forecast) {
@@ -106,6 +123,7 @@ function populateMainForecastInfo(forecast) {
 		setDayInfoHeading(daysInfoHeading[i], forecastDays[i]);
 		populateWindCard(infoCards, forecastDays[i]);
 		populateHumidityCard(infoCards, forecastDays[i]);
+		populateVisibilityCard(infoCards, forecastDays[i]);
 	}
 }
 
