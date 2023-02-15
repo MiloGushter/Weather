@@ -9,12 +9,20 @@ function getDayFromDate(date) {
 function populateAside(location, current) {
 	const cityInfo = document.querySelector(".aside-city-info");
 	cityInfo.textContent = `${location.name}, ${location.country}`;
-	const temperature = document.querySelector(".temperature-number");
+	const temperature = document.querySelector(".aside-weather-info-value");
 	const degrees = document.createElement("sup");
-	degrees.textContent = "°C";
-	degrees.classList.add("temeperature-degrees");
-	temperature.textContent = `${current.temp_c}`;
-	temperature.append(degrees);
+	const temperatureMetric = document.querySelector(".toggle input").checked;
+	if (temperatureMetric) {
+		degrees.textContent = "°F";
+		degrees.classList.add("temeperature-degrees");
+		temperature.textContent = `${parseInt(current.temp_f)}`;
+		temperature.append(degrees);
+	} else {
+		degrees.textContent = "°C";
+		degrees.classList.add("temeperature-degrees");
+		temperature.textContent = `${current.temp_c}`;
+		temperature.append(degrees);
+	}
 	const weekdayInfo = document.querySelector(".aside-weather-info-day");
 	const weekdayTime = document.createElement("span");
 	const time = location.localtime.split(" ")[1];
@@ -34,12 +42,22 @@ function populateMainForecast(forecast) {
 		cardContent[0].textContent = getDayFromDate(forecastDays[i].date);
 		cardContent[1].src = forecastDays[i].day.condition.icon;
 		const degrees = document.createElement("sup");
-		degrees.textContent = "°C";
+		const temperatureMetric = document.querySelector(".toggle input").checked;
 		let temperatures = cardContent[2].children;
-		temperatures[0].textContent = Math.round(forecastDays[i].day.maxtemp_c);
-		temperatures[0].appendChild(degrees.cloneNode(true));
-		temperatures[1].textContent = Math.round(forecastDays[i].day.mintemp_c);
-		temperatures[1].appendChild(degrees.cloneNode(true));
+		degrees.textContent = "°C";
+		if (temperatureMetric) {
+			degrees.textContent = "°F";
+			temperatures[0].textContent = Math.round(forecastDays[i].day.maxtemp_f);
+			temperatures[0].appendChild(degrees.cloneNode(true));
+			temperatures[1].textContent = Math.round(forecastDays[i].day.mintemp_f);
+			temperatures[1].appendChild(degrees.cloneNode(true));
+		} else {
+			degrees.textContent = "°C";
+			temperatures[0].textContent = Math.round(forecastDays[i].day.maxtemp_c);
+			temperatures[0].appendChild(degrees.cloneNode(true));
+			temperatures[1].textContent = Math.round(forecastDays[i].day.mintemp_c);
+			temperatures[1].appendChild(degrees.cloneNode(true));
+		}
 	}
 }
 
@@ -59,7 +77,7 @@ function populateWindCard(card, forecast) {
 	const windSpeed = forecast.day.maxwind_kph;
 	windMetric.textContent = "km/h";
 	windMetric.classList.add("value-metric");
-	windValueHolder.textContent = `${windSpeed} `;
+	windValueHolder.textContent = windSpeed;
 	windValueHolder.appendChild(windMetric);
 	const windStrength = windValueHolder.nextElementSibling;
 	changeTextAfterIcon(windStrength);
@@ -82,7 +100,7 @@ function populateHumidityCard(card, forecast) {
 	const humidityPercentage = forecast.day.avghumidity;
 	humidityMetric.textContent = "%";
 	humidityMetric.classList.add("value-metric");
-	humidityValueHolder.textContent = `${humidityPercentage} `;
+	humidityValueHolder.textContent = humidityPercentage;
 	humidityValueHolder.appendChild(humidityMetric);
 	const humidityStatus = humidityValueHolder.nextElementSibling;
 	changeTextAfterIcon(humidityStatus);
@@ -100,10 +118,10 @@ function populateHumidityCard(card, forecast) {
 function populateVisibilityCard(card, forecast) {
 	const visibilityValueHolder = card[2].children[1];
 	const visibilityMetric = document.createElement("span");
-	const visibilityDistance = forecast.day.maxwind_kph;
+	const visibilityDistance = forecast.day.avgvis_km;
 	visibilityMetric.textContent = "km";
 	visibilityMetric.classList.add("value-metric");
-	visibilityValueHolder.textContent = `${visibilityDistance}`;
+	visibilityValueHolder.textContent = visibilityDistance;
 	visibilityValueHolder.appendChild(visibilityMetric);
 	const visibilityStatus = visibilityValueHolder.nextElementSibling;
 	changeTextAfterIcon(visibilityStatus);
@@ -144,13 +162,73 @@ export function populateContent() {
 		if (event.key === "Enter") {
 			let locationInfo, currentInfo, forecastInfo;
 			getWeather(search.value).then((response) => {
+				sessionStorage.clear();
 				locationInfo = response.location;
 				currentInfo = response.current;
 				forecastInfo = response.forecast;
+				sessionStorage.setItem("current_temp_c", currentInfo.temp_c);
+				sessionStorage.setItem("current_temp_f", currentInfo.temp_f);
+				for (let i in forecastInfo.forecastday) {
+					let day = forecastInfo.forecastday[i].day;
+					sessionStorage.setItem(`maxtemp${i}_c`, day.maxtemp_c);
+					sessionStorage.setItem(`mintemp${i}_c`, day.mintemp_c);
+					sessionStorage.setItem(`maxtemp${i}_f`, parseInt(day.maxtemp_f));
+					sessionStorage.setItem(`mintemp${i}_f`, parseInt(day.mintemp_f));
+				}
 				populateAside(locationInfo, currentInfo);
 				populateMainForecast(forecastInfo);
 				populateMainForecastInfo(forecastInfo);
 			});
+		}
+	});
+}
+
+export function changeTemperatureMetric() {
+	const temperatureMetric = document.querySelector(".toggle input");
+	const asideTemperature = document.querySelector(".aside-weather-info-value");
+	const asideDegrees = document.createElement("sup");
+	const forecastCards = document.querySelectorAll(".main-forecast");
+	temperatureMetric.addEventListener("change", () => {
+		if (temperatureMetric.checked) {
+			// Side
+			asideDegrees.textContent = "°F";
+			asideDegrees.classList.add("temeperature-degrees");
+			asideTemperature.textContent = `${parseInt(
+				sessionStorage.getItem("current_temp_f")
+			)}`;
+			asideTemperature.append(asideDegrees);
+			// Forecast
+			for (let i = 0; i < forecastCards.length; i++) {
+				const cardContent = forecastCards[i].children;
+				const degreesCard = document.createElement("sup");
+				let temperatures = cardContent[2].children;
+				degreesCard.textContent = "°F";
+				temperatures[0].textContent = sessionStorage.getItem(`maxtemp${i}_f`);
+				temperatures[0].appendChild(degreesCard.cloneNode(true));
+				temperatures[1].textContent = sessionStorage.getItem(`mintemp${i}_f`);
+				temperatures[1].appendChild(degreesCard.cloneNode(true));
+			}
+		} else {
+			// Side
+			asideDegrees.textContent = "°C";
+			asideDegrees.classList.add("temeperature-degrees");
+			asideTemperature.textContent = `${sessionStorage.getItem("current_temp_c")}`;
+			asideTemperature.append(asideDegrees);
+			// Forecast
+			for (let i = 0; i < forecastCards.length; i++) {
+				const cardContent = forecastCards[i].children;
+				const degreesCard = document.createElement("sup");
+				let temperatures = cardContent[2].children;
+				degreesCard.textContent = "°C";
+				temperatures[0].textContent = parseInt(
+					sessionStorage.getItem(`maxtemp${i}_c`)
+				);
+				temperatures[0].appendChild(degreesCard.cloneNode(true));
+				temperatures[1].textContent = parseInt(
+					sessionStorage.getItem(`mintemp${i}_c`)
+				);
+				temperatures[1].appendChild(degreesCard.cloneNode(true));
+			}
 		}
 	});
 }
