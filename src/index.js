@@ -1,5 +1,10 @@
 import "./sass/style.scss";
-import { populateOnLoad, populateContent } from "./modules/populateContent";
+import {
+	populateOnLoad,
+	populateContent,
+	changeTemperatureMetric,
+} from "./modules/populateContent";
 
 populateOnLoad();
 populateContent();
+changeTemperatureMetric();
